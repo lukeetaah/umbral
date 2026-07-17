@@ -1,0 +1,15 @@
+name: Safety concern
+description: Report non-confidential safety, privacy, or claim problems
+title: "[safety] "
+labels: [safety]
+body:
+  - type: markdown
+    attributes: {value: "For exploitable vulnerabilities or private data exposure, use private vulnerability reporting instead."}
+  - type: dropdown
+    id: kind
+    attributes: {label: Area, options: [Audio safety, Privacy, Consent, Scientific claim, Accessibility, Other]}
+    validations: {required: true}
+  - type: textarea
+    id: concern
+    attributes: {label: Concern and potential impact}
+    validations: {required: true}

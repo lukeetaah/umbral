@@ -1,0 +1,8 @@
+export type LocalRecord = { id: string; createdAt: string; kind: "session" | "preference" | "consent"; payload: Record<string, unknown> };
+const DB = "umbral-local-v1"; const STORE = "records";
+
+function openDb(): Promise<IDBDatabase> { return new Promise((resolve, reject) => { const request = indexedDB.open(DB, 1); request.onupgradeneeded = () => { if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE, { keyPath: "id" }); }; request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }
+export async function saveLocal(record: LocalRecord) { const db = await openDb(); await new Promise<void>((resolve, reject) => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).put(record); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); }); db.close(); }
+export async function listLocal(): Promise<LocalRecord[]> { const db = await openDb(); const result = await new Promise<LocalRecord[]>((resolve, reject) => { const request = db.transaction(STORE).objectStore(STORE).getAll(); request.onsuccess = () => resolve(request.result as LocalRecord[]); request.onerror = () => reject(request.error); }); db.close(); return result; }
+export async function clearLocal() { const db = await openDb(); await new Promise<void>((resolve, reject) => { const tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).clear(); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); }); db.close(); }
+export async function exportLocal() { return JSON.stringify({ schema: "umbral-export-v1", exportedAt: new Date().toISOString(), records: await listLocal() }, null, 2); }

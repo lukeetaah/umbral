@@ -1,0 +1,1 @@
+export const es={home:{eyebrow:"INVESTIGACIÓN ABIERTA · TODO OCURRE EN TU NAVEGADOR",title:"¿Puede un sonido aprender a significar?",lede:"UMBRAL investiga si un sonido nuevo puede aprender a funcionar como una llave para una sensación, un estado o un recuerdo.",cta:"Probar el laboratorio local",limits:"No lee tu cerebro. No promete curar."}} as const;

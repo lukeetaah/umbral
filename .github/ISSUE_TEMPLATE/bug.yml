@@ -1,0 +1,19 @@
+name: Bug report
+description: Reproducible software problem without participant data
+title: "[bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes: {value: "Do not include secrets, personal data, or medical histories."}
+  - type: input
+    id: version
+    attributes: {label: Version and browser}
+    validations: {required: true}
+  - type: textarea
+    id: steps
+    attributes: {label: Reproduction steps}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected and observed behavior}
+    validations: {required: true}

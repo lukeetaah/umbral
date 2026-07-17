@@ -1,0 +1,1 @@
+export const en={home:{eyebrow:"OPEN RESEARCH · EVERYTHING RUNS IN YOUR BROWSER",title:"Can a sound learn to mean something?",lede:"UMBRAL investigates whether a new sound can learn to work as a key for a sensation, state, or memory.",cta:"Try the local laboratory",limits:"It does not read your brain. It does not promise a cure."}} as const;

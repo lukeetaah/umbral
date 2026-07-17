@@ -1,0 +1,24 @@
+name: Research idea
+description: Propose a falsifiable, safe protocol
+title: "[research] "
+labels: [research]
+body:
+  - type: textarea
+    id: hypothesis
+    attributes: {label: Hypothesis and null alternative}
+    validations: {required: true}
+  - type: textarea
+    id: control
+    attributes: {label: Sham, controls, and expectation measure}
+    validations: {required: true}
+  - type: textarea
+    id: failure
+    attributes: {label: Result that would change your mind}
+    validations: {required: true}
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: No trauma, hidden conditioning, unsafe audio, medical claim, or paid API is required.
+          required: true

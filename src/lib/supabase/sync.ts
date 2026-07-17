@@ -1,0 +1,3 @@
+import { listLocal } from "@/src/lib/local-store";
+import { getSupabaseClient } from "./client";
+export async function syncLocalSessions(){const supabase=getSupabaseClient();if(!supabase)throw new Error("Supabase no está configurado; el modo local sigue disponible.");const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Iniciá sesión antes de sincronizar.");const records=(await listLocal()).filter(r=>r.kind==="session");if(!records.length)return 0;const rows=records.map(r=>({id:r.id,user_id:user.id,status:"completed",started_at:r.createdAt,completed_at:r.createdAt,source:"local-import",client_snapshot:r.payload}));const {error}=await supabase.from("sessions").upsert(rows,{onConflict:"id"});if(error)throw error;return rows.length;}
