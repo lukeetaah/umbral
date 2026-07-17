@@ -1,6 +1,6 @@
 {
   "name": "umbral",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ignore-pattern .next",
+    "lint": "eslint . --ignore-pattern .next --ignore-pattern playwright-report --ignore-pattern test-results",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --config vitest.config.mjs",
     "test:watch": "vitest",

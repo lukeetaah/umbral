@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="es"><body><a className="skip-link" href="#contenido">Saltar al contenido</a><SiteHeader/><GlobalStop/>{children}<footer className="site-footer"><span>UMBRAL v0.1.0-alpha · AGPL-3.0</span><span>USD 0/mes · Sin publicidad · Sin venta de datos</span></footer></body></html>;
+  return <html lang="es"><body><a className="skip-link" href="#contenido">Saltar al contenido</a><SiteHeader/><GlobalStop/>{children}<footer className="site-footer"><span>UMBRAL v0.1.0-alpha.2 · AGPL-3.0</span><span>USD 0/mes · Sin publicidad · Sin venta de datos</span></footer></body></html>;
 }

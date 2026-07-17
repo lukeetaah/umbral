@@ -5,10 +5,9 @@ type: software
 authors:
   - family-names: Founder
     given-names: Lucas
-version: 0.1.0-alpha
+version: 0.1.0-alpha.2
 date-released: 2026-07-17
 license: AGPL-3.0-only
-repository-code: https://github.com/OWNER/umbral
 preferred-citation:
   type: article
   title: "UMBRAL: An Open, Zero-Cost Platform for Adaptive Auditory-Perceptual Learning Experiments"
