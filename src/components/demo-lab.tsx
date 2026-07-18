@@ -9,7 +9,7 @@ import { decide } from "@/src/lib/possibility-engine";
 import { buildPersonalLearningModel, explainPersonalLearning, observationsFromPersonalModel, type PersonalLearningModel } from "@/src/lib/learning-engine";
 import { contributeLocalSessions, getCollectiveLearningSnapshot, type CollectiveLearningSnapshot } from "@/src/lib/supabase/sync";
 
-type Stage = "intro" | "calibrate" | "ready" | "run" | "respond" | "result";
+type Stage = "intro" | "ready" | "run" | "respond" | "result";
 type Language = "es" | "en";
 type OutputSupport = "checking" | "selectable" | "default-only";
 
@@ -35,22 +35,22 @@ const labCopy: Record<LabId, Record<Language, {name:string;question:string;detai
 const copy = {
   es:{
     local:"MODO LOCAL", title:"Laboratorio de sonidos", privacy:"Tus respuestas quedan guardadas solamente en este dispositivo.",
-    labQuestion:"QUÉ VAS A PROBAR", consent:"Entiendo que puedo parar cuando quiera y voy a usar un volumen cómodo.", start:"Seguir: probar sonido", safeTitle:"Elegí una sensación segura", safeText:"Elegí algo simple y cómodo. No uses trauma ni recuerdos íntimos.",
-    outputStep:"PASO 1", outputTitle:"Elegí dónde querés escuchar", outputText:"Podés usar auriculares, parlantes o la salida predeterminada de tu equipo.", chooseOutput:"Elegir parlante o auriculares", choosingOutput:"Abriendo salidas…", outputDefault:"Tu navegador usará la salida predeterminada del sistema.", outputChecking:"Comprobando si el navegador permite elegir…", outputSelected:"Salida elegida", outputCancelled:"No se cambió la salida. Podés volver a intentarlo o usar la predeterminada.",
-    calibration:"PASO 2 · PRUEBA DE AUDIO", calibrationTitle:"Probemos si se escucha", calibrationText:"Dejá el volumen en un nivel cómodo y tocá el botón. Vas a oír un tono corto.", testAudio:"Probar sonido", heard:"Sí, lo escuché", unheard:"No se escucha", troubleshoot:"1. Revisá que la pestaña no esté silenciada. 2. Cambiá la salida arriba o desde tu sistema. 3. Subí apenas el volumen y probá de nuevo.", changeOutput:"Cambiar parlante o auriculares", continue:"Empezar",
-    before:"ANTES DE ESCUCHAR", readyTitle:"Contá lo que notes, aunque sea nada", readyText:"Algunas pruebas tienen sonido y otras no. Eso nos permite comparar sin adivinar.", listen:"Iniciar prueba", preparing:"Esperá un momento…", listening:"Escuchando…", stopRespond:"Detener y responder",
-    respondFirst:"TU RESPUESTA", happened:"¿Notaste algo?", yes:"Sí, noté algo", no:"No noté nada", kind:"¿Qué fue?", confidence:"¿Qué tan seguro estás?", expectation:"Antes de escuchar, ¿esperabas que apareciera algo?", note:"Podés describirlo, sin incluir datos íntimos", save:"Guardar y continuar",
+    labQuestion:"QUÉ VAS A PROBAR", consent:"Puedo parar cuando quiera y voy a usar un volumen cómodo.", start:"Empezar sesión", safeTitle:"Elegí una sensación segura", safeText:"Elegí algo simple y cómodo. No uses trauma ni recuerdos íntimos.",
+    outputStep:"PREPARACIÓN · TODO EN ESTA PANTALLA", outputTitle:"Dejemos el audio listo", outputText:"Elegí la salida si querés y probá un tono. Después empezás sin más vueltas.", chooseOutput:"Elegir parlante o auriculares", choosingOutput:"Abriendo salidas…", outputDefault:"Se usará la salida predeterminada del sistema.", outputChecking:"Comprobando las salidas…", outputSelected:"Salida elegida", outputCancelled:"No se cambió la salida. Podés volver a intentarlo o usar la predeterminada.",
+    calibrationTitle:"¿Se escucha?", calibrationText:"El tono dura un segundo y no cuenta como prueba.", testAudio:"Probar tono", heard:"Sí, se escucha", unheard:"No se escucha", troubleshoot:"Revisá que la pestaña no esté silenciada, cambiá la salida o subí apenas el volumen.",
+    quickSession:"Rápida · 4 pruebas · 2 minutos", fullSession:"Completa · 8 pruebas · 4 minutos", sessionLengthTitle:"Elegí cuánto querés hacer", before:"ANTES DEL SONIDO", readyTitle:"Cuando quieras, escuchá", readyNext:"Siguiente sonido", readyText:"Dura menos de dos segundos. Después respondés con un toque.", listen:"Escuchar", preparing:"Un momento…", listening:"Escuchando…", stopRespond:"Responder ahora",
+    respondFirst:"RESPUESTA RÁPIDA", happened:"¿Apareció algo?", yes:"Sí", no:"No", kind:"¿Qué fue?", confidence:"¿Qué tan seguro estás?", expectation:"Antes de escuchar, ¿esperás que aparezca algo?", low:"Poco", medium:"Tal vez", high:"Mucho", note:"Si querés, describilo en una frase", save:"Guardar y seguir",
     resultLabel:"APRENDIZAJE PERSONAL", resultTitle:"UMBRAL ajustó tu próxima sesión.", resultText:"Compara tus respuestas a sonidos reales con los controles. No adivina lo que sentís ni fuerza un resultado.", export:"Descargar mis datos (JSON)", restart:"Hacer otra sesión",
     learnedFrom:"RESPUESTAS USADAS", signalRate:"CON SEÑAL", controlRate:"EN CONTROLES", topCategory:"APARECIÓ MÁS", noCategory:"Todavía sin patrón", collectiveTitle:"Ayudá a que UMBRAL aprenda de muchas personas", collectiveText:"Si elegís aportar, se envían respuestas, categorías y parámetros del sonido. No se envían tu texto libre, correo, cuenta ni un identificador de sesión.", collectiveConsent:"Quiero aportar estas respuestas de forma anónima al aprendizaje colectivo.", contribute:"Aportar anónimamente", contributing:"Aportando…", collectiveUnavailable:"El aprendizaje colectivo todavía no está conectado. Tu modelo personal sí se actualizó.", collectiveCount:"respuestas anónimas en el modelo colectivo",
     exportAll:"Descargar todos mis datos (JSON)", discomfort:"Registrar malestar y detener", erase:"Eliminar completamente y reiniciar", signalError:"No se pudo iniciar el audio.",
   },
   en:{
     local:"LOCAL MODE", title:"Sound laboratory", privacy:"Your answers are stored only on this device.",
-    labQuestion:"WHAT YOU WILL TEST", consent:"I understand I can stop at any time and will keep the volume comfortable.", start:"Continue: test sound", safeTitle:"Choose a safe feeling", safeText:"Choose something simple and comfortable. Do not use trauma or intimate memories.",
-    outputStep:"STEP 1", outputTitle:"Choose where you want to listen", outputText:"You can use headphones, speakers, or your computer's default output.", chooseOutput:"Choose speaker or headphones", choosingOutput:"Opening outputs…", outputDefault:"Your browser will use the system's default output.", outputChecking:"Checking whether this browser can choose an output…", outputSelected:"Selected output", outputCancelled:"The output was not changed. You can try again or use the default.",
-    calibration:"STEP 2 · AUDIO TEST", calibrationTitle:"Let's make sure you can hear it", calibrationText:"Keep the volume comfortable and press the button. You will hear a short tone.", testAudio:"Test sound", heard:"Yes, I heard it", unheard:"I cannot hear it", troubleshoot:"1. Check that the tab is not muted. 2. Change the output above or in your system settings. 3. Raise the volume slightly and try again.", changeOutput:"Change speaker or headphones", continue:"Start",
-    before:"BEFORE YOU LISTEN", readyTitle:"Report what you notice, even if it is nothing", readyText:"Some tests have sound and others do not. That lets us compare without guessing.", listen:"Start test", preparing:"Wait a moment…", listening:"Listening…", stopRespond:"Stop and respond",
-    respondFirst:"YOUR ANSWER", happened:"Did you notice anything?", yes:"Yes, I noticed something", no:"I noticed nothing", kind:"What was it?", confidence:"How sure are you?", expectation:"Before listening, did you expect anything to appear?", note:"You can describe it without including intimate data", save:"Save and continue",
+    labQuestion:"WHAT YOU WILL TEST", consent:"I can stop at any time and will keep the volume comfortable.", start:"Start session", safeTitle:"Choose a safe feeling", safeText:"Choose something simple and comfortable. Do not use trauma or intimate memories.",
+    outputStep:"SETUP · EVERYTHING ON THIS SCREEN", outputTitle:"Let's get the audio ready", outputText:"Choose an output if you want and test one tone. Then you can begin.", chooseOutput:"Choose speaker or headphones", choosingOutput:"Opening outputs…", outputDefault:"The system's default output will be used.", outputChecking:"Checking audio outputs…", outputSelected:"Selected output", outputCancelled:"The output was not changed. You can try again or use the default.",
+    calibrationTitle:"Can you hear it?", calibrationText:"The tone lasts one second and is not part of the test.", testAudio:"Test tone", heard:"Yes, I hear it", unheard:"I cannot hear it", troubleshoot:"Check that the tab is not muted, change the output, or raise the volume slightly.",
+    quickSession:"Quick · 4 tests · 2 minutes", fullSession:"Complete · 8 tests · 4 minutes", sessionLengthTitle:"Choose how much to do", before:"BEFORE THE SOUND", readyTitle:"Listen when you are ready", readyNext:"Next sound", readyText:"It lasts less than two seconds. Then you answer with one tap.", listen:"Listen", preparing:"One moment…", listening:"Listening…", stopRespond:"Answer now",
+    respondFirst:"QUICK ANSWER", happened:"Did anything appear?", yes:"Yes", no:"No", kind:"What was it?", confidence:"How sure are you?", expectation:"Before listening, do you expect anything to appear?", low:"Low", medium:"Maybe", high:"High", note:"If you want, describe it in one sentence", save:"Save and continue",
     resultLabel:"PERSONAL LEARNING", resultTitle:"UMBRAL adjusted your next session.", resultText:"It compares your answers to real sounds with the controls. It does not guess what you felt or force a result.", export:"Download my data (JSON)", restart:"Run another session",
     learnedFrom:"ANSWERS USED", signalRate:"WITH SIGNAL", controlRate:"IN CONTROLS", topCategory:"MOST COMMON", noCategory:"No pattern yet", collectiveTitle:"Help UMBRAL learn from many people", collectiveText:"If you contribute, UMBRAL sends answers, categories, and sound parameters. It does not send your free text, email, account, or a session identifier.", collectiveConsent:"I want to contribute these answers anonymously to collective learning.", contribute:"Contribute anonymously", contributing:"Contributing…", collectiveUnavailable:"Collective learning is not connected yet. Your personal model was still updated.", collectiveCount:"anonymous answers in the collective model",
     exportAll:"Download all my data (JSON)", discomfort:"Record discomfort and stop", erase:"Erase completely and restart", signalError:"Audio could not be started.",
@@ -73,7 +73,7 @@ export function DemoLab() {
   const [trialIndex,setTrialIndex] = useState(0);
   const [occurred,setOccurred] = useState<boolean|null>(null);
   const [category,setCategory] = useState("otra");
-  const [confidence,setConfidence] = useState(50);
+  const [confidence,setConfidence] = useState(60);
   const [expectation,setExpectation] = useState(50);
   const [note,setNote] = useState("");
   const [message,setMessage] = useState("");
@@ -87,6 +87,7 @@ export function DemoLab() {
   const [outputBusy,setOutputBusy] = useState(false);
   const [outputLabel,setOutputLabel] = useState("");
   const [outputMessage,setOutputMessage] = useState("");
+  const [sessionLength,setSessionLength] = useState<4|8>(4);
   const [protocolSeed,setProtocolSeed] = useState(41027);
   const [sessionPreferredSeeds,setSessionPreferredSeeds] = useState<number[]>([]);
   const [personalModel,setPersonalModel] = useState<PersonalLearningModel>(()=>buildPersonalLearningModel([]));
@@ -98,7 +99,7 @@ export function DemoLab() {
   const timers = useRef(new Set<ReturnType<typeof setTimeout>>());
   const runToken = useRef(0);
   const stageRef = useRef<Stage>(stage);
-  const protocol = useMemo(() => buildProtocol(protocolSeed, 8, lab, sessionPreferredSeeds), [lab,protocolSeed,sessionPreferredSeeds]);
+  const protocol = useMemo(() => buildProtocol(protocolSeed, sessionLength, lab, sessionPreferredSeeds), [lab,protocolSeed,sessionLength,sessionPreferredSeeds]);
   const trial: TrialPlan = protocol[trialIndex] ?? protocol[0];
   const genome = useMemo(() => genomeFromSeed(trial.seed, trial.condition === "sham" || trial.condition === "preparation"), [trial]);
   const calibrationGenome = useMemo(() => ({...genomeFromSeed(8811),carrierHz:440,modHz:0,durationMs:1000,gain:0.16,waveform:"sine" as const,beatMode:"none" as const,harmonics:1,pan:0,sham:false}), []);
@@ -154,9 +155,9 @@ export function DemoLab() {
   },[]);
   useEffect(() => { stageRef.current=stage; },[stage]);
 
-  const resetAnswers = () => { setOccurred(null); setCategory("otra"); setConfidence(50); setExpectation(50); setNote(""); };
-  const switchLab = (next:LabId) => { stopRun(); setLab(next); setStage("intro"); setTrialIndex(0); setProtocolSeed(personalModel.nextProtocolSeed); setSessionPreferredSeeds(nextPreferredSeeds); setCalibrationPlayed(false); setHeardCalibration(null); resetAnswers(); setMessage(""); };
-  const start = () => { setStage("calibrate"); setMessage(""); setCalibrationPlayed(false); setHeardCalibration(null); };
+  const resetAnswers = () => { setOccurred(null); setCategory("otra"); setConfidence(60); setExpectation(50); setNote(""); };
+  const switchLab = (next:LabId) => { stopRun(); setLab(next); setStage("intro"); setTrialIndex(0); setProtocolSeed(personalModel.nextProtocolSeed); setSessionPreferredSeeds(nextPreferredSeeds); resetAnswers(); setMessage(""); };
+  const start = () => { setStage("ready"); setMessage(""); };
   const chooseOutput = async () => {
     setOutputBusy(true);
     setOutputMessage("");
@@ -229,7 +230,7 @@ export function DemoLab() {
   return <div className="demo-shell" lang={lang}>
     <header className="demo-top"><div><span className="local-badge">● {t.local}</span><h1>{t.title}</h1><p>{t.privacy}</p></div><button className="lang-button" onClick={() => setLang(lang === "es" ? "en" : "es")}>{lang === "es" ? "EN" : "ES"}</button></header>
     <div className="demo-layout"><aside className="lab-nav" aria-label={lang==="es"?"Laboratorios":"Laboratories"}>{(Object.keys(labCopy) as LabId[]).map((id,index)=><button key={id} className={lab===id?"selected":""} aria-pressed={lab===id} onClick={()=>switchLab(id)}><span>0{index+1}</span><b>{labCopy[id][lang].name}</b><small>{labCopy[id][lang].question}</small></button>)}</aside>
-      <section className="lab-stage" aria-live="polite"><div className="trial-meta"><span>{currentLab.name.toUpperCase()}</span>{!(["intro","calibrate"].includes(stage))&&<span>{lang==="es"?"ENSAYO":"TRIAL"} {trialIndex+1}/{protocol.length}</span>}</div>
+      <section className="lab-stage" aria-live="polite"><div className="trial-meta"><span>{currentLab.name.toUpperCase()}</span>{stage!=="intro"&&<span>{lang==="es"?"PRUEBA":"TEST"} {trialIndex+1}/{protocol.length}</span>}</div>{stage!=="intro"&&stage!=="result"&&<div className="trial-progress" aria-hidden="true"><i style={{width:`${((trialIndex+(stage==="respond"?1:0))/protocol.length)*100}%`}}/></div>}
         {stage==="intro"&&<div className="stage-card">
           <p className="kicker">{t.outputStep}</p>
           <h2>{t.outputTitle}</h2>
@@ -240,23 +241,21 @@ export function DemoLab() {
               {outputMessage || (outputSupport==="checking"?t.outputChecking:outputSupport==="default-only"?t.outputDefault:outputLabel?`${t.outputSelected}: ${outputLabel}`:t.outputDefault)}
             </p>
           </div>
+          <div className="inline-audio-check">
+            <div><b>{t.calibrationTitle}</b><p>{t.calibrationText}</p></div>
+            <button className="button primary" onClick={testAudio}>{t.testAudio} ▶</button>
+            <div className="compact-binary"><button disabled={!calibrationPlayed} className={heardCalibration===true?"chosen":""} onClick={()=>setHeardCalibration(true)}>{t.heard}</button><button disabled={!calibrationPlayed} className={heardCalibration===false?"chosen":""} onClick={()=>setHeardCalibration(false)}>{t.unheard}</button></div>
+          </div>
+          {heardCalibration===false&&<p className="troubleshoot">{t.troubleshoot}</p>}
           <div className="lab-summary"><p className="kicker">{t.labQuestion}</p><h3>{currentLab.question}</h3><p>{currentLab.detail}</p></div>
+          <div className="session-length"><b>{t.sessionLengthTitle}</b><div role="group" aria-label={t.sessionLengthTitle}><button className={sessionLength===4?"chosen":""} aria-pressed={sessionLength===4} onClick={()=>setSessionLength(4)}>{t.quickSession}</button><button className={sessionLength===8?"chosen":""} aria-pressed={sessionLength===8} onClick={()=>setSessionLength(8)}>{t.fullSession}</button></div></div>
           {lab==="anchor"&&<div className="safety-box"><b>{t.safeTitle}</b><p>{t.safeText}</p><label>{lang==="es"?"Cualidad":"Quality"}<select value={anchorQuality} onChange={event=>setAnchorQuality(event.target.value)}>{safeQualities.map(option=><option key={option[0]} value={option[0]}>{option[lang==="es"?1:2]}</option>)}</select></label></div>}
           <label className="consent-check"><input type="checkbox" checked={consent} onChange={event=>setConsent(event.target.checked)}/> {t.consent}</label>
-          <button className="button primary" disabled={!consent} onClick={start}>{t.start} →</button>
+          <button className="button primary" disabled={!consent||heardCalibration!==true} onClick={start}>{t.start} →</button>
         </div>}
-        {stage==="calibrate"&&<div className="stage-card centered">
-          <p className="kicker">{t.calibration}</p><h2>{t.calibrationTitle}</h2><p>{t.calibrationText}</p>
-          {outputSupport==="selectable"&&<button className="output-link" disabled={outputBusy} onClick={chooseOutput}>{outputBusy?t.choosingOutput:t.changeOutput}</button>}
-          {outputLabel&&<p className="output-status selected" role="status">{t.outputSelected}: {outputLabel}</p>}
-          <div className="stimulus-preview" aria-hidden="true"><span>440 HZ</span><b>1.0 s</b></div>
-          <button className="button primary" onClick={testAudio}>{t.testAudio} ▶</button>
-          <div className="binary calibration-choice"><button disabled={!calibrationPlayed} className={heardCalibration===true?"chosen":""} onClick={()=>setHeardCalibration(true)}>{t.heard}</button><button disabled={!calibrationPlayed} className={heardCalibration===false?"chosen":""} onClick={()=>setHeardCalibration(false)}>{t.unheard}</button></div>
-          {heardCalibration===false&&<p className="troubleshoot">{t.troubleshoot}</p>}{heardCalibration===true&&<button className="button primary" onClick={()=>setStage("ready")}>{t.continue} →</button>}
-        </div>}
-        {stage==="ready"&&<div className="stage-card centered"><p className="kicker">{t.before}</p><h2>{t.readyTitle}</h2><p>{t.readyText}</p><div className="trial-seal" aria-label={lang==="es"?"Condición experimental oculta":"Hidden experimental condition"}>?</div><button className="button primary" onClick={beginTrial}>{t.listen} ▶</button></div>}
+        {stage==="ready"&&<div className="stage-card centered compact-stage"><p className="kicker">{t.before}</p><h2>{trialIndex===0?t.readyTitle:t.readyNext}</h2><p>{t.readyText}</p><fieldset className="quick-question"><legend>{t.expectation}</legend><div className="quick-scale"><button className={expectation===10?"chosen":""} onClick={()=>setExpectation(10)}>{t.low}</button><button className={expectation===50?"chosen":""} onClick={()=>setExpectation(50)}>{t.medium}</button><button className={expectation===90?"chosen":""} onClick={()=>setExpectation(90)}>{t.high}</button></div></fieldset><button className="button primary listen-button" onClick={beginTrial}>{t.listen} ▶</button></div>}
         {stage==="run"&&<div className="stage-card centered">{runPhase==="listen"&&trial.target!=="none"&&<div className={trial.target==="shape"?"visual-stimulus shape":trial.target==="state"?"state-stimulus":"visual-stimulus color"} style={{opacity:trial.visualStrength}} aria-label={trial.target==="state"?(safeQualities.find(option=>option[0]===anchorQuality)?.[lang==="es"?1:2]||anchorQuality):(trial.target==="color"?(lang==="es"?"Estímulo de color":"Color stimulus"):(lang==="es"?"Estímulo de forma":"Shape stimulus"))}>{trial.target==="state"&&(safeQualities.find(option=>option[0]===anchorQuality)?.[lang==="es"?1:2]||anchorQuality)}</div>}{trial.load==="moderate"&&runPhase==="listen"&&<div className="load-grid" aria-hidden="true">{Array.from({length:12},(_,index)=><i key={index}/>)}</div>}<p>{runPhase==="prepare"?t.preparing:t.listening}</p><button className="button ghost" onClick={stopAndRespond}>{t.stopRespond}</button></div>}
-        {stage==="respond"&&<div className="stage-card"><p className="kicker">{t.respondFirst}</p><h2>{t.happened}</h2><div className="binary"><button className={occurred===true?"chosen":""} aria-pressed={occurred===true} onClick={()=>setOccurred(true)}>{t.yes}</button><button className={occurred===false?"chosen":""} aria-pressed={occurred===false} onClick={()=>setOccurred(false)}>{t.no}</button></div>{occurred!==null&&<div className="response-detail">{occurred&&<label>{t.kind}<select value={category} onChange={event=>setCategory(event.target.value)}>{responseOptions.map(option=><option key={option[0]} value={option[0]}>{option[lang==="es"?1:2]}</option>)}</select></label>}<label>{t.expectation}: {expectation}%<input aria-label={t.expectation} type="range" min="0" max="100" value={expectation} onChange={event=>setExpectation(Number(event.target.value))}/></label><label>{t.confidence}: {confidence}%<input aria-label={t.confidence} type="range" min="0" max="100" value={confidence} onChange={event=>setConfidence(Number(event.target.value))}/></label>{occurred&&<label>{t.note}<textarea maxLength={240} value={note} onChange={event=>setNote(event.target.value)} placeholder={lang==="es"?"Ej.: apareció una forma breve":"Example: a brief shape appeared"}/></label>}</div>}<button className="button primary" disabled={occurred===null} onClick={saveResponse}>{t.save} →</button></div>}
+        {stage==="respond"&&<div className="stage-card compact-stage"><p className="kicker">{t.respondFirst}</p><h2>{t.happened}</h2><div className="binary big-answer"><button className={occurred===true?"chosen":""} aria-pressed={occurred===true} onClick={()=>setOccurred(true)}>{t.yes}</button><button className={occurred===false?"chosen":""} aria-pressed={occurred===false} onClick={()=>setOccurred(false)}>{t.no}</button></div>{occurred!==null&&<div className="response-detail">{occurred&&<label>{t.kind}<select value={category} onChange={event=>setCategory(event.target.value)}>{responseOptions.map(option=><option key={option[0]} value={option[0]}>{option[lang==="es"?1:2]}</option>)}</select></label>}<fieldset className="quick-question"><legend>{t.confidence}</legend><div className="quick-scale"><button className={confidence===25?"chosen":""} onClick={()=>setConfidence(25)}>{t.low}</button><button className={confidence===60?"chosen":""} onClick={()=>setConfidence(60)}>{t.medium}</button><button className={confidence===90?"chosen":""} onClick={()=>setConfidence(90)}>{t.high}</button></div></fieldset>{occurred&&<label>{t.note}<textarea maxLength={160} value={note} onChange={event=>setNote(event.target.value)} placeholder={lang==="es"?"Ej.: una forma redonda":"Example: a round shape"}/></label>}</div>}<button className="button primary" disabled={occurred===null} onClick={saveResponse}>{t.save} →</button></div>}
         {stage==="result"&&<div className="stage-card learning-result"><p className="kicker">{t.resultLabel}</p><h2>{t.resultTitle}</h2><p>{t.resultText}</p>
           <div className="learning-explanation"><b>{explainPersonalLearning(personalModel,lang)}</b><small>{lang==="es"?"La próxima sesión usa este resultado para repetir lo prometedor o explorar otra región. Siempre conserva controles.":"The next session uses this result to retest what looks promising or explore another region. It always keeps controls."}</small></div>
           <div className="learning-metrics">
@@ -271,7 +270,7 @@ export function DemoLab() {
             <label className="consent-check"><input type="checkbox" checked={researchConsent} onChange={event=>setResearchConsent(event.target.checked)}/> {t.collectiveConsent}</label>
             <button className="button primary" disabled={!researchConsent||contributionBusy||collectiveAvailable!==true} onClick={contribute}>{contributionBusy?t.contributing:t.contribute}</button>
           </section>
-          <div className="result-actions"><button className="button ghost" onClick={download}>{t.export}</button><button className="button ghost" onClick={()=>{setProtocolSeed(personalModel.nextProtocolSeed);setSessionPreferredSeeds(nextPreferredSeeds);setTrialIndex(0);setStage("intro");setCalibrationPlayed(false);setHeardCalibration(null)}}>{t.restart}</button></div>
+          <div className="result-actions"><button className="button ghost" onClick={download}>{t.export}</button><button className="button ghost" onClick={()=>{setProtocolSeed(personalModel.nextProtocolSeed);setSessionPreferredSeeds(nextPreferredSeeds);setTrialIndex(0);setStage("intro")}}>{t.restart}</button></div>
         </div>}
         {message&&<p className="local-message" role="status">{message}</p>}</section>
     </div><div className="data-tools"><button onClick={download}>{t.exportAll}</button><button onClick={reportDiscomfort}>{t.discomfort}</button><button onClick={erase}>{t.erase}</button></div>

@@ -59,12 +59,19 @@ const templates: Record<LabId, Template[]> = {
   ],
 };
 
+const quickTrialIndexes: Record<LabId, number[]> = {
+  atlas:[0,2,3,4],
+  apprenticeship:[0,1,4,7],
+  state:[0,1,2,3],
+  anchor:[0,1,2,5],
+};
+
 export function buildProtocol(seed: number, length = 8, lab: LabId = "atlas", preferredSeeds: number[] = []): TrialPlan[] {
   const random = mulberry32(seed);
   const cueSeeds = { A1: Math.floor(random()*1_000_000), A2: Math.floor(random()*1_000_000), B1: Math.floor(random()*1_000_000), control: Math.floor(random()*1_000_000) };
   if (Number.isInteger(preferredSeeds[0]) && preferredSeeds[0] >= 0) cueSeeds.A1 = preferredSeeds[0];
   if (Number.isInteger(preferredSeeds[1]) && preferredSeeds[1] >= 0) cueSeeds.A2 = preferredSeeds[1];
-  let ordered = templates[lab].slice(0, length);
+  let ordered = length === 4 ? quickTrialIndexes[lab].map(index=>templates[lab][index]) : templates[lab].slice(0, length);
   if (lab === "atlas") {
     const [first, ...rest] = ordered;
     for (let index = rest.length - 1; index > 0; index -= 1) {
