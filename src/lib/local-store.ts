@@ -1,4 +1,4 @@
-export type LocalRecord = { id: string; createdAt: string; kind: "session" | "preference" | "consent" | "adverse-event"; payload: Record<string, unknown> };
+export type LocalRecord = { id: string; createdAt: string; kind: "session" | "preference" | "consent" | "model" | "contribution" | "adverse-event"; payload: Record<string, unknown> };
 const DB = "umbral-local-v1"; const STORE = "records";
 
 function openDb(): Promise<IDBDatabase> { return new Promise((resolve, reject) => { const request = indexedDB.open(DB, 1); request.onupgradeneeded = () => { if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE, { keyPath: "id" }); }; request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }

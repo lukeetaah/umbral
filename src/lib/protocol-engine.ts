@@ -59,9 +59,11 @@ const templates: Record<LabId, Template[]> = {
   ],
 };
 
-export function buildProtocol(seed: number, length = 8, lab: LabId = "atlas"): TrialPlan[] {
+export function buildProtocol(seed: number, length = 8, lab: LabId = "atlas", preferredSeeds: number[] = []): TrialPlan[] {
   const random = mulberry32(seed);
   const cueSeeds = { A1: Math.floor(random()*1_000_000), A2: Math.floor(random()*1_000_000), B1: Math.floor(random()*1_000_000), control: Math.floor(random()*1_000_000) };
+  if (Number.isInteger(preferredSeeds[0]) && preferredSeeds[0] >= 0) cueSeeds.A1 = preferredSeeds[0];
+  if (Number.isInteger(preferredSeeds[1]) && preferredSeeds[1] >= 0) cueSeeds.A2 = preferredSeeds[1];
   let ordered = templates[lab].slice(0, length);
   if (lab === "atlas") {
     const [first, ...rest] = ordered;

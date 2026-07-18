@@ -19,7 +19,7 @@ Do not add repository secrets for the browser application.
 2. Create a Free project named `umbral`. Do not enable Pro, a Pro Trial, PITR, Branching, add-ons, Storage, or Realtime.
 3. Copy **Project URL** and the **Publishable key** (never the service-role key).
 4. Set Site URL to the final Vercel URL. Add `http://localhost:3000/account` and `https://YOUR-VERCEL-URL/account` to Redirect URLs.
-5. Run every SQL file in `supabase/migrations` in numeric order (`001`, then `002`), then `supabase/seed.sql`, using Supabase CLI or SQL Editor.
+5. Run every SQL file in `supabase/migrations` in numeric order (`001`, `002`, then `003`), then `supabase/seed.sql`, using Supabase CLI or SQL Editor. Migration `003` activates anonymous collective learning; without it, personal learning still works locally.
 6. Create the first user through the `/account` page and obtain the UUID from Authentication → Users.
 7. In SQL Editor, replace the placeholder and run exactly:
 

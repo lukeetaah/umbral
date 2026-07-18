@@ -72,3 +72,28 @@ test("demo exposes a complete English safety path", async ({ page }) => {
   await expect(page.getByText("Your answers are stored only on this device.")).toBeVisible();
   await expect(page.getByText("I understand I can stop at any time and will keep the volume comfortable.")).toBeVisible();
 });
+
+test("a completed session updates the personal model", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Seguir: probar sonido" }).click();
+  await page.getByRole("button", { name: "Probar sonido ▶" }).click();
+  await page.getByRole("button", { name: "Sí, lo escuché" }).click();
+  await page.getByRole("button", { name: "Empezar →" }).click();
+  for (let trial = 0; trial < 8; trial += 1) {
+    await page.getByRole("button", { name: "Iniciar prueba ▶" }).click();
+    await expect(page.getByText(/Escuchando…|Esperá un momento…/)).toBeVisible();
+    await page.getByRole("button", { name: "Detener todo el audio" }).click();
+    await page.getByRole("button", { name: "No noté nada" }).click();
+    await page.getByRole("button", { name: "Guardar y continuar →" }).click();
+  }
+  await expect(page.getByRole("heading", { name: "UMBRAL ajustó tu próxima sesión." })).toBeVisible();
+  await expect(page.getByText("RESPUESTAS USADAS").locator("..").getByText("8", { exact: true })).toBeVisible();
+  await expect(page.getByText("El aprendizaje colectivo todavía no está conectado. Tu modelo personal sí se actualizó.")).toBeVisible();
+});
+
+test("collective learning page is honest when the backend is not connected", async ({ page }) => {
+  await page.goto("/learning");
+  await expect(page.getByRole("heading", { name: "Qué está aprendiendo UMBRAL" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Por ahora, cada dispositivo aprende por separado." })).toBeVisible();
+});

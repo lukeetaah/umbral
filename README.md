@@ -10,6 +10,8 @@ UMBRAL is an open, bilingual, zero-cost platform for investigating whether a new
 - Auditable local Samuel engine: Explorer, Composer, Optimizer, Skeptic, Cartographer, and Anomaly Keeper.
 - Spanish-first UI with English demo/public-page translations; public explanation, expanded evidence matrix, living paper, privacy, consent, limits, and glossary. See the explicit translation gaps in `docs/capability-audit.md`.
 - Optional Supabase Auth/sync with compact SQL, RLS, immutable protocol versions, and no service-role key in the browser.
+- Interpretable personal learning: each response updates a local model, compares signals with controls, and adapts the next session while keeping exploration and sham trials.
+- Explicit anonymous contribution to a protected collective model. It excludes account identifiers and free text, publishes aggregates only, and hides candidate signals until they have at least five observations.
 
 ## Run locally
 
