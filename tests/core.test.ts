@@ -5,6 +5,7 @@ import { genomeFromSeed, hashGenome, stimulusGenomeSchema } from "../src/lib/sti
 import { decide, latinHypercube, scoreObservation } from "../src/lib/possibility-engine";
 import { clearLocal, listLocal, saveLocal } from "../src/lib/local-store";
 import { buildPersonalLearningModel } from "../src/lib/learning-engine";
+import { experiencePlans, plannedMinutes, resolveStep } from "../src/lib/participant-engine";
 
 describe("reproducible core",()=>{
   it("rebuilds identical bounded genomes",()=>{const a=genomeFromSeed(42);const b=genomeFromSeed(42);expect(a).toEqual(b);expect(hashGenome(a)).toBe(hashGenome(b));expect(stimulusGenomeSchema.parse(a).gain).toBeLessThanOrEqual(.16);expect(a.version).toBe("0.2")});
@@ -30,4 +31,13 @@ describe("personal learning",()=>{
     {id:"8",createdAt:"",kind:"session" as const,payload:{trial:{condition:"paired",seed:91},occurred:true,category:"shape",confidence:70,expectation:30}},
   ];const model=buildPersonalLearningModel(records);expect(model.status).toBe("promising");expect(model.signalLift).toBeGreaterThan(0);expect(model.promisingSeeds[0].seed).toBe(91);expect(model.topCategory).toBe("color");expect(model.nextProtocolSeed).not.toBe(41027);expect(buildPersonalLearningModel(records).nextProtocolSeed).toBe(model.nextProtocolSeed)});
   it("does not pretend to learn from an empty history",()=>{const model=buildPersonalLearningModel([]);expect(model.status).toBe("starting");expect(model.responseCount).toBe(0);expect(model.signalLift).toBeNull();expect(model.nextProtocolSeed).toBe(41027)});
+});
+
+describe("participant experience",()=>{
+  const labs=["atlas","apprenticeship","state","anchor"] as const;
+  it("keeps every journey within the promised 8–12 minute window",()=>{for(const lab of labs)expect(plannedMinutes(lab)).toBeGreaterThanOrEqual(8);for(const lab of labs)expect(plannedMinutes(lab)).toBeLessThanOrEqual(12)});
+  it("delivers an audible contrast inside the first 40 seconds",()=>{for(const lab of labs){const first=experiencePlans[lab][0];expect(first.audio.reduce((sum,moment)=>sum+moment.durationMs,0)).toBeLessThan(40_000);expect(first.choices.length).toBeGreaterThan(0)}});
+  it("keeps hidden controls and surprise/retest moments in every laboratory",()=>{for(const lab of labs){const plan=experiencePlans[lab];expect(plan.some(step=>["sham","omission","preparation"].includes(step.hiddenCondition))).toBe(true);expect(plan.some(step=>step.hiddenCondition==="repetition"||step.kind==="recall"||step.id.includes("surprise"))).toBe(true)}});
+  it("uses distinct interaction grammars instead of one shared trial form",()=>{const signatures=labs.map(lab=>experiencePlans[lab].map(step=>step.kind).join("|"));expect(new Set(signatures).size).toBe(4)});
+  it("adapts the current journey from prior choices",()=>{const base=experiencePlans.atlas[1];const adapted=resolveStep(base,[{stepId:"atlas-contrast",choiceId:"b",latencyMs:100,hiddenCondition:"baseline",seed:1}],[]);expect(adapted.audio[0].seed).not.toBe(base.audio[0].seed)});
 });
