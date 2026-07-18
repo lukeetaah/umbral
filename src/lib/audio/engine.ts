@@ -1,5 +1,18 @@
 import { mulberry32, stimulusGenomeSchema, type StimulusGenome } from "@/src/lib/stimulus-genome";
 
+type OutputSelectableMediaDevices = MediaDevices & {
+  selectAudioOutput?: () => Promise<MediaDeviceInfo>;
+};
+
+type OutputSelectableAudioContext = AudioContext & {
+  setSinkId?: (sinkId: string) => Promise<void>;
+};
+
+export type SelectedAudioOutput = {
+  deviceId: string;
+  label: string;
+};
+
 export class UmbralAudioEngine {
   private readonly masterLevel = 0.45;
   private context: AudioContext | null = null;
@@ -8,6 +21,32 @@ export class UmbralAudioEngine {
   private activeSources = new Set<AudioScheduledSourceNode>();
   private activeNodes = new Set<AudioNode>();
   private cleanupTimers = new Set<ReturnType<typeof setTimeout>>();
+
+  canSelectOutput() {
+    if (typeof navigator === "undefined" || typeof AudioContext === "undefined") return false;
+    const mediaDevices = navigator.mediaDevices as OutputSelectableMediaDevices | undefined;
+    return typeof mediaDevices?.selectAudioOutput === "function" && "setSinkId" in AudioContext.prototype;
+  }
+
+  async selectOutput(): Promise<SelectedAudioOutput> {
+    const mediaDevices = navigator.mediaDevices as OutputSelectableMediaDevices | undefined;
+    if (typeof mediaDevices?.selectAudioOutput !== "function") {
+      throw new Error("Este navegador no permite elegir la salida desde la página. Se usará la salida predeterminada del sistema.");
+    }
+
+    // Keep the browser's transient user activation alive for the device prompt.
+    const device = await mediaDevices.selectAudioOutput();
+    await this.setup();
+    const context = this.context as OutputSelectableAudioContext | null;
+    if (typeof context?.setSinkId !== "function") {
+      throw new Error("Este navegador puede mostrar las salidas, pero no puede dirigir Web Audio a una de ellas.");
+    }
+    await context.setSinkId(device.deviceId);
+    return {
+      deviceId: device.deviceId,
+      label: device.label || "Salida de audio elegida",
+    };
+  }
 
   private async setup() {
     if (this.context) return;
