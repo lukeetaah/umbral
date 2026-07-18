@@ -103,7 +103,22 @@ export function DemoLab() {
     engine.current = new UmbralAudioEngine();
     const stop = () => { stopRun(); if(stageRef.current==="run")setStage("respond"); };
     window.addEventListener("umbral:stop",stop);
-    navigator.serviceWorker?.register("/sw.js").catch(() => undefined);
+    if ("serviceWorker" in navigator) {
+      if (process.env.NODE_ENV === "production") {
+        void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+      } else {
+        // A development worker can serve HTML from a previous HMR revision and
+        // hydrate it with the current bundle. Remove only UMBRAL's own caches.
+        void navigator.serviceWorker.getRegistrations()
+          .then(registrations => Promise.all(registrations.map(registration => registration.unregister())))
+          .catch(() => undefined);
+        if ("caches" in window) {
+          void caches.keys()
+            .then(keys => Promise.all(keys.filter(key => key.startsWith("umbral-shell-")).map(key => caches.delete(key))))
+            .catch(() => undefined);
+        }
+      }
+    }
     return () => { window.removeEventListener("umbral:stop",stop); stopRun(); void engine.current?.close(); };
   },[]);
   useEffect(() => { stageRef.current=stage; },[stage]);
