@@ -206,7 +206,16 @@ export class UmbralAudioEngine {
   stop() {
     const now = this.context?.currentTime;
     if (this.master && now !== undefined) {
-      this.master.gain.cancelAndHoldAtTime(now);
+      const gain = this.master.gain;
+      if (typeof gain.cancelAndHoldAtTime === "function") {
+        gain.cancelAndHoldAtTime(now);
+      } else {
+        // Safari and older Web Audio implementations do not expose
+        // cancelAndHoldAtTime(). Preserve the current value before fading.
+        const currentValue = Math.max(0.0001, gain.value);
+        gain.cancelScheduledValues(now);
+        gain.setValueAtTime(currentValue, now);
+      }
       this.master.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
     }
     for (const source of this.activeSources) {

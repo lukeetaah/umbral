@@ -38,6 +38,9 @@ test("demo can route Web Audio to a selected output", async ({ page }) => {
 });
 
 test("demo is usable without Supabase", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(AudioParam.prototype, "cancelAndHoldAtTime", { configurable: true, value: undefined });
+  });
   await page.goto("/demo");
   await expect(page.getByText("MODO LOCAL")).toBeVisible();
   await page.getByRole("checkbox").check();
